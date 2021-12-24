@@ -1,0 +1,39 @@
+.lang{
+    width:80%;
+    margin: 40px auto;
+    padding:10px 20px;
+    color:#fff;
+}
+.lang h2{
+    font-size:32px;
+}
+.lang__card span{
+    width:100px;
+    height: auto;
+    font-size:  40px;
+    padding:0 20px;
+    
+}
+.lang__card{
+    width:60%;
+    height:auto;
+    margin: 20px auto;
+}
+marquee{
+ 
+}
+@media (max-width: 952px) {
+    .lang{
+    width:100%;
+    margin: 0px auto;
+    padding:0px 20px;
+
+
+    }
+    .lang__card{
+    margin: 0 auto;
+    width:90%;
+    }
+
+ 
+}
