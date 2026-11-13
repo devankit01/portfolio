@@ -152,7 +152,18 @@
   .pipe-head i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255, 255, 255, .16); }
   .pipe-head span { margin-left: 8px; }
   .pipe-body { padding: 18px 20px 20px; }
-  .chat { display: flex; flex-direction: column; gap: 10px; }
+  .chat-inner { display: flex; flex-direction: column; gap: 10px; }
+  .chat.live { height: 430px; overflow: hidden; position: relative; transition: opacity .5s ease; }
+  .chat.live.fade { opacity: 0; }
+  .chat.live::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 26px; background: linear-gradient(var(--code-bg), transparent); z-index: 1; pointer-events: none; }
+  .chat.live .chat-inner { transition: transform 1.4s cubic-bezier(.3, .1, .3, 1); will-change: transform; }
+  .pop { animation: pop .5s ease both; }
+  @keyframes pop { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .msg.typing { display: flex; gap: 5px; padding: 15px 16px; }
+  .msg.typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--code-muted); animation: blink 1.1s infinite ease-in-out; }
+  .msg.typing i:nth-child(2) { animation-delay: .18s; }
+  .msg.typing i:nth-child(3) { animation-delay: .36s; }
+  @keyframes blink { 0%, 80%, 100% { opacity: .25; transform: none; } 40% { opacity: 1; transform: translateY(-3px); } }
   .msg { margin: 0; max-width: 88%; padding: 10px 14px; border-radius: 14px; font: 400 14px/1.5 var(--sans); }
   .msg p { margin: 0; }
   .msg.me { align-self: flex-end; background: #7fd8b6; color: #0c1f18; border-bottom-right-radius: 4px; }
@@ -321,24 +332,36 @@
       <figure class="pipe" style="margin:0" aria-label="Illustration of a care team member asking an assistant about user status, using IDs only">
         <div class="pipe-head"><i></i><i></i><i></i><span>care-team assistant</span></div>
         <div class="pipe-body chat">
-          <p class="msg me">How is user U-2041 doing this week?</p>
-          <p class="call">→ get_status(user_id="U-2041", window="7d")</p>
-          <div class="msg bot">
-            <p>U-2041 is on track.</p>
-            <dl class="mini">
-              <div><dt>78%</dt><dd>time in range, up from 71%</dd></div>
-              <div><dt>5 / 7</dt><dd>days with meals logged</dd></div>
-              <div><dt>2 h</dt><dd>since last sync</dd></div>
-            </dl>
-          </div>
-          <p class="msg me">Who needs a follow-up?</p>
-          <p class="call">→ list_flagged(reason="any", limit=3)</p>
-          <div class="msg bot">
-            <ul class="flags">
-              <li><b>U-1187</b> no sync for 4 days</li>
-              <li><b>U-2310</b> time in range below 50%</li>
-              <li><b>U-0962</b> missed last check-in</li>
-            </ul>
+          <div class="chat-inner">
+            <p class="msg me">How is user U-2041 doing this week?</p>
+            <p class="call">→ get_status(user_id="U-2041", window="7d")</p>
+            <div class="msg bot">
+              <p>U-2041 is on track.</p>
+              <dl class="mini">
+                <div><dt>78%</dt><dd>time in range, up from 71%</dd></div>
+                <div><dt>5 / 7</dt><dd>days with meals logged</dd></div>
+                <div><dt>2 h</dt><dd>since last sync</dd></div>
+              </dl>
+            </div>
+            <p class="msg me">Who needs a follow-up?</p>
+            <p class="call">→ list_flagged(reason="any", limit=3)</p>
+            <div class="msg bot">
+              <ul class="flags">
+                <li><b>U-1187</b> no sync for 4 days</li>
+                <li><b>U-2310</b> time in range below 50%</li>
+                <li><b>U-0962</b> missed last check-in</li>
+              </ul>
+            </div>
+            <p class="msg me">Why was U-2310 flagged?</p>
+            <p class="call">→ get_trend(user_id="U-2310", window="14d")</p>
+            <div class="msg bot">
+              <p>Time in range fell from 64% to 47% over 14 days. Most out-of-range readings follow evening meals.</p>
+            </div>
+            <p class="msg me">Draft a check-in note for U-2310.</p>
+            <p class="call">→ draft_note(user_id="U-2310")</p>
+            <div class="msg bot">
+              <p>Draft ready for your review. Nothing is sent until you approve it.</p>
+            </div>
           </div>
         </div>
         <div class="pipe-foot">Illustrative example with made-up data. IDs only, no personal details.</div>
@@ -563,6 +586,63 @@
       });
     }, { rootMargin: '0px 0px -8% 0px' });
     items.forEach(function (el) { io.observe(el); });
+  })();
+</script>
+<script>
+  // Replay the hero chat as a live conversation. Skipped for reduced-motion users, who see it in full.
+  (function () {
+    var chat = document.querySelector('.chat');
+    if (!chat || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var inner = chat.querySelector('.chat-inner');
+    var script = Array.prototype.slice.call(inner.children);
+    chat.classList.add('live');
+
+    function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+    function follow() {
+      var cs = getComputedStyle(chat);
+      var room = chat.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      inner.style.transform = 'translateY(' + -Math.max(0, inner.offsetHeight - room) + 'px)';
+    }
+    function add(el) { el.classList.add('pop'); inner.appendChild(el); follow(); }
+
+    async function play() {
+      for (;;) {
+        inner.textContent = '';
+        inner.style.transition = 'none';
+        inner.style.transform = 'translateY(0)';
+        void inner.offsetHeight;
+        inner.style.transition = '';
+        chat.classList.remove('fade');
+        await wait(700);
+        for (var n = 0; n < script.length; n++) {
+          var el = script[n].cloneNode(true);
+          if (el.classList.contains('me')) {
+            var text = el.textContent;
+            el.textContent = '';
+            add(el);
+            for (var c = 1; c <= text.length; c++) { el.textContent = text.slice(0, c); await wait(30); }
+            follow();
+            await wait(450);
+          } else if (el.classList.contains('call')) {
+            add(el);
+            await wait(800);
+          } else {
+            var dots = document.createElement('div');
+            dots.className = 'msg bot typing';
+            dots.innerHTML = '<i></i><i></i><i></i>';
+            add(dots);
+            await wait(1300);
+            inner.removeChild(dots);
+            add(el);
+            await wait(2400);
+          }
+        }
+        await wait(3500);
+        chat.classList.add('fade');
+        await wait(650);
+      }
+    }
+    play();
   })();
 </script>
 </body>
