@@ -152,13 +152,18 @@
   .pipe-head i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255, 255, 255, .16); }
   .pipe-head span { margin-left: 8px; }
   .pipe-body { padding: 18px 20px 20px; }
-  .pipe-label { color: var(--code-muted); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; margin: 0 0 8px; }
-  .note { margin: 0 0 16px; color: var(--code-ink); font-family: var(--sans); font-size: 14px; line-height: 1.6; }
-  .note mark { background: rgba(127, 216, 182, .16); color: #b5ecd6; padding: 1px 4px; border-radius: 4px; }
-  .arrow { display: flex; align-items: center; gap: 10px; color: var(--code-muted); font-size: 11.5px; margin: 0 0 16px; }
-  .arrow::before, .arrow::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, .1); }
-  .pipe pre { margin: 0; white-space: pre-wrap; word-break: break-word; font: inherit; }
-  .k { color: var(--code-key); } .s { color: var(--code-str); } .c { color: var(--code-muted); }
+  .chat { display: flex; flex-direction: column; gap: 10px; }
+  .msg { margin: 0; max-width: 88%; padding: 10px 14px; border-radius: 14px; font: 400 14px/1.5 var(--sans); }
+  .msg p { margin: 0; }
+  .msg.me { align-self: flex-end; background: #7fd8b6; color: #0c1f18; border-bottom-right-radius: 4px; }
+  .msg.bot { align-self: flex-start; background: rgba(255, 255, 255, .07); color: var(--code-ink); border-bottom-left-radius: 4px; }
+  .call { margin: 0; color: var(--code-muted); font-size: 11.5px; line-height: 1.5; word-break: break-word; }
+  .mini { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 10px 0 2px; }
+  .mini dt { font: 500 17px/1.2 var(--mono); color: var(--code-key); }
+  .mini dd { margin: 3px 0 0; font-size: 12px; line-height: 1.35; color: var(--code-muted); }
+  .flags { margin: 0; padding: 0; list-style: none; }
+  .flags li { padding: 4px 0; }
+  .flags b { font: 500 13px/1 var(--mono); color: var(--code-key); margin-right: 8px; }
   .pipe-foot { padding: 10px 20px; border-top: 1px solid rgba(255, 255, 255, .08); color: var(--code-muted); font-size: 11.5px; }
 
   /* Sections */
@@ -313,24 +318,30 @@
         </div>
       </div>
 
-      <figure class="pipe" style="margin:0" aria-label="Illustration of clinical text being extracted into structured data">
-        <div class="pipe-head"><i></i><i></i><i></i><span>extract.py · on-prem</span></div>
-        <div class="pipe-body">
-          <p class="pipe-label">Clinical note</p>
-          <p class="note">Patient with <mark>type 2 diabetes</mark>, started on <mark>metformin 500 mg</mark> twice daily. Review in <mark>3 months</mark>.</p>
-          <div class="arrow">local LLM · schema validated</div>
-          <p class="pipe-label">Structured output</p>
-<pre>{
-  <span class="k">"diagnosis"</span>: <span class="s">"type 2 diabetes"</span>,
-  <span class="k">"medication"</span>: {
-    <span class="k">"name"</span>: <span class="s">"metformin"</span>,
-    <span class="k">"dose"</span>: <span class="s">"500 mg"</span>,
-    <span class="k">"frequency"</span>: <span class="s">"2x daily"</span>
-  },
-  <span class="k">"follow_up"</span>: <span class="s">"3 months"</span>
-}</pre>
+      <figure class="pipe" style="margin:0" aria-label="Illustration of a care team member asking an assistant about user status, using IDs only">
+        <div class="pipe-head"><i></i><i></i><i></i><span>care-team assistant</span></div>
+        <div class="pipe-body chat">
+          <p class="msg me">How is user U-2041 doing this week?</p>
+          <p class="call">→ get_status(user_id="U-2041", window="7d")</p>
+          <div class="msg bot">
+            <p>U-2041 is on track.</p>
+            <dl class="mini">
+              <div><dt>78%</dt><dd>time in range, up from 71%</dd></div>
+              <div><dt>5 / 7</dt><dd>days with meals logged</dd></div>
+              <div><dt>2 h</dt><dd>since last sync</dd></div>
+            </dl>
+          </div>
+          <p class="msg me">Who needs a follow-up?</p>
+          <p class="call">→ list_flagged(reason="any", limit=3)</p>
+          <div class="msg bot">
+            <ul class="flags">
+              <li><b>U-1187</b> no sync for 4 days</li>
+              <li><b>U-2310</b> time in range below 50%</li>
+              <li><b>U-0962</b> missed last check-in</li>
+            </ul>
+          </div>
         </div>
-        <div class="pipe-foot">Illustrative example with made-up text. No data leaves the hospital.</div>
+        <div class="pipe-foot">Illustrative example with made-up data. IDs only, no personal details.</div>
       </figure>
     </div>
   </div>
@@ -347,7 +358,7 @@
         <p>I'm open to AI Engineer, Backend Engineer and ML Engineer roles. I'm based in Amsterdam and don't need visa sponsorship.</p>
         <div class="facts">
           <div class="fact"><b>4+ years</b><span>building production Python backends</span></div>
-          <div class="fact"><b>On-prem LLMs</b><span>deployed inside hospital firewalls</span></div>
+          <div class="fact"><b>Local LLMs</b><span>in production for medical text extraction</span></div>
           <div class="fact"><b>3×</b><span>hackathon winner</span></div>
         </div>
       </div>
@@ -372,7 +383,7 @@
             <li><b>Deploy</b><span>Docker, CI/CD and Ansible, to cloud and hospital servers.</span></li>
           </ol>
           <ul class="points">
-            <li>The whole stack runs inside the hospital firewall, meeting data residency rules.</li>
+            <li>The whole stack runs on-premise, meeting data residency rules.</li>
             <li>Model choice was made on measured results, not on reputation.</li>
             <li>The same deployment works in cloud and on-premise environments.</li>
             <li>Built with clinicians and data scientists, in a regulated setting.</li>
@@ -397,7 +408,7 @@
             <ul>
               <li>Designed and deployed an on-premise LLM pipeline for medical text extraction from patient records.</li>
               <li>Built Python backend services and REST APIs handling sensitive patient data across cloud and hospital environments.</li>
-              <li>Integrated with external health systems (PharmAccess, CarePay) covering claims data, patient records and partner APIs.</li>
+              <li>Integrated with external health-system partners covering claims data, patient records and partner APIs.</li>
               <li>Built data analytics dashboards and onboarding flows with clinicians and data scientists.</li>
               <li>Maintained CI/CD pipelines and Ansible deployments, with audit trails for insurer declaration workflows.</li>
             </ul>
