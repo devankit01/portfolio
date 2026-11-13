@@ -1,6 +1,6 @@
 [build]
-  publish = "."
-  command = "echo 'Static site, nothing to build'"
+  publish = "build"
+  command = "mkdir -p build && cp index.html favicon.svg build/"
 
 [[headers]]
   for = "/*"
