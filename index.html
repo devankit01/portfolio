@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ankit Gupta · Backend & AI Engineer</title>
+<meta name="description" content="Ankit Gupta is a backend and AI engineer in Amsterdam who builds the APIs, pipelines and deployments that put LLMs into production in healthcare.">
+<meta property="og:title" content="Ankit Gupta · Backend & AI Engineer">
+<meta property="og:description" content="Backend systems that put AI models into production, mostly in healthcare.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ankitcodes.netlify.app/">
+<meta name="theme-color" content="#f6f4ef">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+  // Set theme before paint to avoid a flash.
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('theme'); } catch (e) {}
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    document.documentElement.classList.add('js');
+  })();
+</script>
+<style>
+  :root {
+    --bg: #f6f4ef;
+    --surface: #fffdf8;
+    --ink: #17201c;
+    --muted: #5b665f;
+    --line: #dcd8cd;
+    --accent: #0b7a5b;
+    --accent-soft: #e2efe9;
+    --code-bg: #14201b;
+    --code-ink: #dbe7e0;
+    --code-muted: #7f9589;
+    --code-key: #7fd8b6;
+    --code-str: #f0c987;
+    --shadow: 0 1px 2px rgba(23, 32, 28, .05), 0 12px 32px -12px rgba(23, 32, 28, .18);
+    --display: "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    --sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --wrap: 1080px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1412;
+      --surface: #151d1a;
+      --ink: #e8ece8;
+      --muted: #94a39a;
+      --line: #25302b;
+      --accent: #4fd1a5;
+      --accent-soft: #162a23;
+      --code-bg: #0a100e;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 32px -12px rgba(0, 0, 0, .6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1412;
+    --surface: #151d1a;
+    --ink: #e8ece8;
+    --muted: #94a39a;
+    --line: #25302b;
+    --accent: #4fd1a5;
+    --accent-soft: #162a23;
+    --code-bg: #0a100e;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 32px -12px rgba(0, 0, 0, .6);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 17px/1.65 var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  img, svg { max-width: 100%; }
+  ::selection { background: var(--accent); color: var(--bg); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 24px; }
+  .skip { position: absolute; left: -999px; top: 8px; background: var(--ink); color: var(--bg); padding: 8px 14px; border-radius: 6px; z-index: 20; }
+  .skip:focus { left: 8px; }
+
+  /* Header */
+  header.site {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 16px; }
+  .brand { font: 500 15px/1 var(--mono); text-decoration: none; letter-spacing: -.01em; white-space: nowrap; }
+  .brand b { color: var(--accent); font-weight: 500; }
+  nav.main { display: flex; align-items: center; gap: 4px; }
+  nav.main a {
+    font-size: 14.5px; text-decoration: none; color: var(--muted);
+    padding: 8px 12px; border-radius: 8px;
+  }
+  nav.main a:hover { color: var(--ink); background: var(--accent-soft); }
+  .theme {
+    width: 38px; height: 38px; margin-left: 6px; flex: none;
+    display: grid; place-items: center;
+    background: none; border: 1px solid var(--line); border-radius: 10px;
+    color: var(--ink); cursor: pointer;
+  }
+  .theme:hover { border-color: var(--accent); color: var(--accent); }
+  .theme svg { width: 17px; height: 17px; }
+  .theme .moon { display: none; }
+  :root[data-theme="dark"] .theme .sun { display: none; }
+  :root[data-theme="dark"] .theme .moon { display: block; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .theme .sun { display: none; }
+    :root:not([data-theme="light"]) .theme .moon { display: block; }
+  }
+
+  /* Hero */
+  .hero { padding: 84px 0 72px; }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); gap: 56px; align-items: center; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font: 500 13px/1 var(--mono); color: var(--muted);
+    letter-spacing: .02em; margin: 0 0 22px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+  h1 {
+    font: 500 clamp(40px, 6.2vw, 68px)/1.04 var(--display);
+    letter-spacing: -.025em; margin: 0 0 24px;
+  }
+  h1 em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .lede { font-size: 19px; color: var(--muted); max-width: 33em; margin: 0 0 32px; }
+  .lede strong { color: var(--ink); font-weight: 500; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font: 500 15px/1 var(--sans); text-decoration: none;
+    padding: 13px 20px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--surface); transition: transform .15s, border-color .15s;
+  }
+  .btn:hover { transform: translateY(-1px); border-color: var(--accent); }
+  .btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .btn.primary:hover { background: var(--accent); border-color: var(--accent); }
+  .btn svg { width: 16px; height: 16px; }
+
+  /* Hero pipeline card */
+  .pipe { background: var(--code-bg); color: var(--code-ink); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; font: 400 13px/1.7 var(--mono); }
+  .pipe-head { display: flex; align-items: center; gap: 7px; padding: 12px 16px; border-bottom: 1px solid rgba(255, 255, 255, .08); color: var(--code-muted); font-size: 12px; }
+  .pipe-head i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255, 255, 255, .16); }
+  .pipe-head span { margin-left: 8px; }
+  .pipe-body { padding: 18px 20px 20px; }
+  .pipe-label { color: var(--code-muted); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; margin: 0 0 8px; }
+  .note { margin: 0 0 16px; color: var(--code-ink); font-family: var(--sans); font-size: 14px; line-height: 1.6; }
+  .note mark { background: rgba(127, 216, 182, .16); color: #b5ecd6; padding: 1px 4px; border-radius: 4px; }
+  .arrow { display: flex; align-items: center; gap: 10px; color: var(--code-muted); font-size: 11.5px; margin: 0 0 16px; }
+  .arrow::before, .arrow::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, .1); }
+  .pipe pre { margin: 0; white-space: pre-wrap; word-break: break-word; font: inherit; }
+  .k { color: var(--code-key); } .s { color: var(--code-str); } .c { color: var(--code-muted); }
+  .pipe-foot { padding: 10px 20px; border-top: 1px solid rgba(255, 255, 255, .08); color: var(--code-muted); font-size: 11.5px; }
+
+  /* Sections */
+  section { padding: 76px 0; border-top: 1px solid var(--line); }
+  .sec-head { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; margin-bottom: 40px; align-items: baseline; }
+  .sec-no { font: 500 13px/1.4 var(--mono); color: var(--accent); letter-spacing: .04em; }
+  h2 { font: 500 clamp(28px, 3.6vw, 38px)/1.15 var(--display); letter-spacing: -.02em; margin: 0; }
+  .sec-body { margin-left: 232px; }
+
+  /* About */
+  .about p { margin: 0 0 18px; max-width: 40em; }
+  .about p:first-child { font-size: 20px; line-height: 1.55; }
+  .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-top: 36px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); overflow: hidden; }
+  .fact { padding: 22px 24px; border-right: 1px solid var(--line); }
+  .fact:last-child { border-right: 0; }
+  .fact b { display: block; font: 500 30px/1.1 var(--display); letter-spacing: -.02em; margin-bottom: 6px; }
+  .fact span { color: var(--muted); font-size: 14.5px; line-height: 1.45; display: block; }
+
+  /* Featured work */
+  .feature { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 34px; box-shadow: var(--shadow); }
+  .tag { display: inline-block; font: 500 12px/1 var(--mono); color: var(--accent); background: var(--accent-soft); padding: 7px 10px; border-radius: 6px; letter-spacing: .03em; }
+  .feature h3 { font: 500 28px/1.2 var(--display); letter-spacing: -.015em; margin: 16px 0 12px; }
+  .feature > p { color: var(--muted); max-width: 42em; margin: 0 0 28px; }
+  .flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 0 0 28px; padding: 0; list-style: none; counter-reset: step; }
+  .flow li { counter-increment: step; border: 1px solid var(--line); border-radius: 12px; padding: 16px; background: var(--bg); position: relative; }
+  .flow li::before { content: "0" counter(step); font: 500 12px/1 var(--mono); color: var(--accent); display: block; margin-bottom: 10px; }
+  .flow b { display: block; font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+  .flow span { color: var(--muted); font-size: 14px; line-height: 1.5; display: block; }
+  .points { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 32px; margin: 0; padding: 0; list-style: none; }
+  .points li { padding-left: 22px; position: relative; font-size: 15.5px; }
+  .points li::before { content: ""; position: absolute; left: 0; top: .72em; width: 10px; height: 2px; background: var(--accent); }
+
+  /* Experience */
+  .jobs { list-style: none; margin: 0; padding: 0; }
+  .job { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; padding: 30px 0; border-top: 1px solid var(--line); }
+  .job:first-child { border-top: 0; padding-top: 0; }
+  .when { font: 400 13.5px/1.5 var(--mono); color: var(--muted); padding-top: 4px; }
+  .when span { display: block; }
+  .job h3 { font: 600 19px/1.3 var(--sans); margin: 0 0 2px; letter-spacing: -.01em; }
+  .org { color: var(--accent); font-weight: 500; margin: 0 0 12px; font-size: 15.5px; }
+  .job ul { margin: 0; padding-left: 18px; color: var(--muted); }
+  .job li { margin-bottom: 7px; font-size: 15.5px; }
+  .job li::marker { color: var(--line); }
+
+  /* Projects */
+  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .card { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px; text-decoration: none; transition: transform .18s, border-color .18s, box-shadow .18s; }
+  .card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: var(--shadow); }
+  .card h3 { font: 500 21px/1.25 var(--display); letter-spacing: -.01em; margin: 0 0 4px; }
+  .card .kind { font: 400 12.5px/1.4 var(--mono); color: var(--muted); margin: 0 0 14px; }
+  .card p { color: var(--muted); font-size: 15px; line-height: 1.55; margin: 0 0 18px; flex: 1; }
+  .card .kind { flex: none; }
+  .card .links { flex: none; margin: 18px 0 0; display: flex; gap: 18px; font: 500 14px/1 var(--sans); }
+  .card .links a { color: var(--accent); text-decoration: none; }
+  .card .links a:hover { text-decoration: underline; }
+  .stats { display: flex; flex-wrap: wrap; gap: 10px 26px; margin: 0 0 18px; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .stats dt { font: 500 22px/1.1 var(--display); letter-spacing: -.01em; }
+  .stats dd { margin: 3px 0 0; color: var(--muted); font-size: 13px; line-height: 1.4; max-width: 15em; }
+  .earlier { margin: 24px 0 0; color: var(--muted); font-size: 15px; }
+  .earlier b { color: var(--ink); font-weight: 600; }
+  .earlier a { color: var(--accent); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+  .chips li { font: 400 12px/1 var(--mono); padding: 6px 9px; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); }
+
+  /* Skills */
+  .skills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 48px; margin: 0; }
+  .skill { padding: 18px 0; border-top: 1px solid var(--line); }
+  .skill dt { font: 500 13px/1.4 var(--mono); color: var(--accent); letter-spacing: .03em; margin-bottom: 6px; }
+  .skill dd { margin: 0; font-size: 15.5px; }
+
+  /* Contact */
+  .contact { text-align: center; padding: 96px 0; }
+  .contact h2 { font-size: clamp(34px, 5.4vw, 56px); margin-bottom: 18px; }
+  .contact p { color: var(--muted); max-width: 32em; margin: 0 auto 30px; }
+  .contact .cta { justify-content: center; }
+
+  footer { border-top: 1px solid var(--line); padding: 26px 0 34px; color: var(--muted); font-size: 14px; }
+  .foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .foot a { text-decoration: none; margin-left: 18px; }
+  .foot a:first-child { margin-left: 0; }
+  .foot a:hover { color: var(--accent); }
+
+  /* Reveal on scroll (only when JS is on) */
+  .js .reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+  .js .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .js .reveal { opacity: 1; transform: none; transition: none; }
+    .btn, .card { transition: none; }
+  }
+
+  @media (max-width: 900px) {
+    .hero { padding: 56px 0 56px; }
+    .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+    .sec-head, .job { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+    .sec-head { margin-bottom: 28px; }
+    .sec-body { margin-left: 0; }
+    .cards { grid-template-columns: minmax(0, 1fr); }
+    .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    section { padding: 60px 0; }
+  }
+  @media (max-width: 640px) {
+    body { font-size: 16px; }
+    .wrap { padding: 0 16px; }
+    nav.main a { display: none; }
+    nav.main a.keep { display: inline-block; }
+    .lede { font-size: 17.5px; }
+    .facts { grid-template-columns: minmax(0, 1fr); }
+    .fact { border-right: 0; border-bottom: 1px solid var(--line); }
+    .fact:last-child { border-bottom: 0; }
+    .feature { padding: 22px; }
+    .points, .skills, .flow { grid-template-columns: minmax(0, 1fr); }
+    .btn { flex: 1 1 auto; justify-content: center; }
+    .foot a { margin-left: 0; margin-right: 18px; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site">
+  <div class="wrap bar">
+    <a class="brand" href="#top" aria-label="Ankit Gupta, home">ankit<b>.codes</b></a>
+    <nav class="main" aria-label="Main">
+      <a href="#about">About</a>
+      <a href="#work">Work</a>
+      <a href="#experience">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a class="keep" href="#contact">Contact</a>
+      <button class="theme" id="theme" type="button" aria-label="Switch colour theme">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap hero" id="top">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Backend &amp; AI Engineer · Amsterdam</p>
+        <h1>I put AI models into <em>production</em>, where the data is sensitive.</h1>
+        <p class="lede">I'm <strong>Ankit Gupta</strong>. I build the APIs, pipelines and deployments that let LLMs work on real patient data, most recently at <strong>Clear.bio</strong>.</p>
+        <div class="cta">
+          <a class="btn primary" href="#contact">Get in touch
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn" href="https://github.com/devankit01" target="_blank" rel="noopener">GitHub</a>
+          <a class="btn" href="https://www.linkedin.com/in/ankitcodes01/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+
+      <figure class="pipe" style="margin:0" aria-label="Illustration of clinical text being extracted into structured data">
+        <div class="pipe-head"><i></i><i></i><i></i><span>extract.py · on-prem</span></div>
+        <div class="pipe-body">
+          <p class="pipe-label">Clinical note</p>
+          <p class="note">Patient with <mark>type 2 diabetes</mark>, started on <mark>metformin 500 mg</mark> twice daily. Review in <mark>3 months</mark>.</p>
+          <div class="arrow">local LLM · schema validated</div>
+          <p class="pipe-label">Structured output</p>
+<pre>{
+  <span class="k">"diagnosis"</span>: <span class="s">"type 2 diabetes"</span>,
+  <span class="k">"medication"</span>: {
+    <span class="k">"name"</span>: <span class="s">"metformin"</span>,
+    <span class="k">"dose"</span>: <span class="s">"500 mg"</span>,
+    <span class="k">"frequency"</span>: <span class="s">"2x daily"</span>
+  },
+  <span class="k">"follow_up"</span>: <span class="s">"3 months"</span>
+}</pre>
+        </div>
+        <div class="pipe-foot">Illustrative example with made-up text. No data leaves the hospital.</div>
+      </figure>
+    </div>
+  </div>
+
+  <section id="about">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-no">01 / About</span>
+        <h2>The engineer between the model and the real world.</h2>
+      </div>
+      <div class="sec-body about reveal">
+        <p>A model that works in a notebook is the easy part. I work on what comes after: the service around it, the data going in, the checks on what comes out, and the deployment that keeps running.</p>
+        <p>For the past four years I've done that in healthcare at Clear.bio in Amsterdam, where patient data can't leave the building and every decision needs an audit trail. Before that I built Python backends and full-stack products in India.</p>
+        <p>I'm open to AI Engineer, Backend Engineer and ML Engineer roles. I'm based in Amsterdam and don't need visa sponsorship.</p>
+        <div class="facts">
+          <div class="fact"><b>4+ years</b><span>building production Python backends</span></div>
+          <div class="fact"><b>On-prem LLMs</b><span>deployed inside hospital firewalls</span></div>
+          <div class="fact"><b>3×</b><span>hackathon winner</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-no">02 / Featured work</span>
+        <h2>Medical text extraction with local LLMs.</h2>
+      </div>
+      <div class="sec-body">
+        <article class="feature reveal">
+          <span class="tag">Clear.bio · Production</span>
+          <h3>Structured data from patient records, with zero data egress</h3>
+          <p>Hospitals hold years of useful information in free-text notes, and they can't send it to a cloud API. I designed and deployed a pipeline that extracts it with open models running entirely on-premise.</p>
+          <ol class="flow">
+            <li><b>Ingest</b><span>Patient records enter through a Python backend service.</span></li>
+            <li><b>Extract</b><span>Llama 3.1 and Meditron, served locally through Ollama.</span></li>
+            <li><b>Evaluate</b><span>Models compared on clinical accuracy and latency.</span></li>
+            <li><b>Deploy</b><span>Docker, CI/CD and Ansible, to cloud and hospital servers.</span></li>
+          </ol>
+          <ul class="points">
+            <li>The whole stack runs inside the hospital firewall, meeting data residency rules.</li>
+            <li>Model choice was made on measured results, not on reputation.</li>
+            <li>The same deployment works in cloud and on-premise environments.</li>
+            <li>Built with clinicians and data scientists, in a regulated setting.</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-no">03 / Experience</span>
+        <h2>Where I've worked.</h2>
+      </div>
+      <ol class="jobs">
+        <li class="job reveal">
+          <div class="when"><span>Sep 2022 – Present</span><span>Amsterdam, Netherlands</span></div>
+          <div>
+            <h3>Backend Engineer</h3>
+            <p class="org">Clear.bio</p>
+            <ul>
+              <li>Designed and deployed an on-premise LLM pipeline for medical text extraction from patient records.</li>
+              <li>Built Python backend services and REST APIs handling sensitive patient data across cloud and hospital environments.</li>
+              <li>Integrated with external health systems (PharmAccess, CarePay) covering claims data, patient records and partner APIs.</li>
+              <li>Built data analytics dashboards and onboarding flows with clinicians and data scientists.</li>
+              <li>Maintained CI/CD pipelines and Ansible deployments, with audit trails for insurer declaration workflows.</li>
+            </ul>
+          </div>
+        </li>
+        <li class="job reveal">
+          <div class="when"><span>Feb 2022 – Aug 2022</span><span>Noida, India</span></div>
+          <div>
+            <h3>Python Developer</h3>
+            <p class="org">Appventurez Mobitech</p>
+            <ul>
+              <li>Built REST APIs in Python consumed by web and mobile clients.</li>
+              <li>Automated Excel-based data workflows and handled production deployments on AWS.</li>
+            </ul>
+          </div>
+        </li>
+        <li class="job reveal">
+          <div class="when"><span>Jul 2021 – Dec 2021</span><span>Gurgaon, India</span></div>
+          <div>
+            <h3>Full Stack Developer Intern</h3>
+            <p class="org">Yokoso</p>
+            <ul>
+              <li>Built financial process automations end to end, from backend logic to the front-end interface.</li>
+            </ul>
+          </div>
+        </li>
+        <li class="job reveal">
+          <div class="when"><span>Jul 2020 – Nov 2020</span><span>Delhi, India</span></div>
+          <div>
+            <h3>Python Developer Intern</h3>
+            <p class="org">The Hobnob</p>
+            <ul>
+              <li>Built an admin panel and front end for navigation and data management.</li>
+            </ul>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-no">04 / Projects</span>
+        <h2>Things I've built and open-sourced.</h2>
+      </div>
+      <div class="cards">
+        <article class="card reveal">
+          <h3>Jev Decision Model Benchmark</h3>
+          <p class="kind">Model evaluation · Oct 2026</p>
+          <p>Benchmarked four Ollama decision models (Jev 1.13, Nimble 9B, Tev1 4B and Tev1 0.8B) on three real-world tasks from HuggingFace datasets: e-commerce ticket triage, healthcare symptom urgency and finance fraud detection. Measured accuracy and latency.</p>
+          <dl class="stats">
+            <div><dt>148</dt><dd>samples</dd></div>
+            <div><dt>592</dt><dd>API calls</dd></div>
+            <div><dt>4 pts</dt><dd>local Nimble 9B behind cloud Jev, at zero API cost</dd></div>
+          </dl>
+          <ul class="chips"><li>Python</li><li>Ollama</li><li>HuggingFace Datasets</li></ul>
+          <p class="links"><a href="https://github.com/devankit01/jev-decision-eval" target="_blank" rel="noopener">GitHub ↗</a></p>
+        </article>
+        <article class="card reveal">
+          <h3>TLDR to WhatsApp Daily Digest</h3>
+          <p class="kind">Automated pipeline · Feb – Mar 2026</p>
+          <p>Pulls the last 24 hours of TLDR newsletter emails over IMAP, summarises them in short news style with GPT-4o mini, and sends the digest to WhatsApp through Twilio every morning. Scheduled with APScheduler and hosted on Railway.</p>
+          <dl class="stats">
+            <div><dt>~$0.01</dt><dd>running cost per day</dd></div>
+          </dl>
+          <ul class="chips"><li>Python</li><li>OpenAI API</li><li>Twilio</li><li>APScheduler</li><li>Railway</li></ul>
+          <p class="links"><a href="https://github.com/devankit01/tldr-whatsapp-bot" target="_blank" rel="noopener">GitHub ↗</a></p>
+        </article>
+        <article class="card reveal">
+          <h3>Askify</h3>
+          <p class="kind">Document Q&amp;A assistant · Jun 2024</p>
+          <p>Upload a document, then summarise it, ask questions about it, or turn it into a quiz. Built with the OpenAI API, LangChain and a vector database.</p>
+          <ul class="chips"><li>Python</li><li>OpenAI API</li><li>LangChain</li><li>Vector DB</li><li>Streamlit</li></ul>
+          <p class="links"><a href="https://askify.streamlit.app" target="_blank" rel="noopener">Live demo ↗</a><a href="https://github.com/devankit01/streamlit-askify" target="_blank" rel="noopener">GitHub ↗</a></p>
+        </article>
+        <article class="card reveal">
+          <h3>SimpliQuery</h3>
+          <p class="kind">Data insights tool · Jun 2024</p>
+          <p>Upload CSV or Excel files, or connect a database, then run SQL queries and explore the results in the browser.</p>
+          <ul class="chips"><li>Python</li><li>SQL</li><li>Streamlit</li></ul>
+          <p class="links"><a href="https://simpliquery.streamlit.app" target="_blank" rel="noopener">Live demo ↗</a><a href="https://github.com/devankit01/streamlit-SimpliQuery" target="_blank" rel="noopener">GitHub ↗</a></p>
+        </article>
+      </div>
+      <p class="earlier reveal"><b>Earlier:</b> Hireup (recruitment platform), Brighterbees (social learning platform) and an online examination portal for colleges. More on <a href="https://github.com/devankit01" target="_blank" rel="noopener">GitHub</a>.</p>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-no">05 / Skills</span>
+        <h2>What I work with.</h2>
+      </div>
+      <dl class="sec-body skills reveal">
+        <div class="skill"><dt>AI / ML</dt><dd>LLM integration (Ollama, OpenAI, Groq), extraction pipelines, model evaluation, HuggingFace Transformers, NLP</dd></div>
+        <div class="skill"><dt>Backend</dt><dd>Python, FastAPI, Django, Flask, REST APIs, microservices</dd></div>
+        <div class="skill"><dt>Infrastructure</dt><dd>AWS, Docker, Docker Compose, CI/CD, Ansible, on-premise deployments</dd></div>
+        <div class="skill"><dt>Data</dt><dd>PostgreSQL, SQL, data pipelines, healthcare claims APIs, EHR and FHIR concepts</dd></div>
+        <div class="skill"><dt>Practice</dt><dd>Security-aware engineering, regulated environments, technical documentation, Git</dd></div>
+        <div class="skill"><dt>Also</dt><dd>JavaScript, HTML and CSS; Dutch at A2 and learning</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap reveal">
+      <span class="sec-no">06 / Contact</span>
+      <h2 style="margin-top:14px">Let's build something that ships.</h2>
+      <p>I'm looking for AI, backend and ML engineering roles in the Netherlands or remote. Email is the fastest way to reach me.</p>
+      <div class="cta">
+        <a class="btn primary" href="mailto:devankitgupta01@gmail.com">devankitgupta01@gmail.com</a>
+        <a class="btn" href="https://www.linkedin.com/in/ankitcodes01/" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn" href="https://github.com/devankit01" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© <span id="year">2026</span> Ankit Gupta · Amsterdam</span>
+    <span>
+      <a href="https://github.com/devankit01" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/ankitcodes01/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://twitter.com/Gupta42Ankit" target="_blank" rel="noopener">X</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    document.getElementById('theme').addEventListener('click', function () {
+      var current = root.getAttribute('data-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      var next = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch (e) {}
+    });
+
+    var items = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) {
+      items.forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { entry.target.classList.add('in'); io.unobserve(entry.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    items.forEach(function (el) { io.observe(el); });
+  })();
+</script>
+</body>
+</html>
