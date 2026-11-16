@@ -230,6 +230,9 @@
   .card .links { flex: none; margin: 18px 0 0; display: flex; gap: 18px; font: 500 14px/1 var(--sans); }
   .card .links a { color: var(--accent); text-decoration: none; }
   .card .links a:hover { text-decoration: underline; }
+  .feature .links { display: flex; gap: 18px; font: 500 14px/1 var(--sans); }
+  .feature .links a { color: var(--accent); text-decoration: none; }
+  .feature .links a:hover { text-decoration: underline; }
   .stats { display: flex; flex-wrap: wrap; gap: 10px 26px; margin: 0 0 18px; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   .stats dt { font: 500 22px/1.1 var(--display); letter-spacing: -.01em; }
   .stats dd { margin: 3px 0 0; color: var(--muted); font-size: 13px; line-height: 1.4; max-width: 15em; }
@@ -378,6 +381,7 @@
       <div class="sec-body about reveal">
         <p>A model that works in a notebook is the easy part. I work on what comes after: the service around it, the data going in, the checks on what comes out, and the deployment that keeps running.</p>
         <p>For the past four years I've done that in healthcare at Clear.bio in Amsterdam, where patient data can't leave the building and every decision needs an audit trail. Before that I built Python backends and full-stack products in India.</p>
+        <p>Outside work I build <a href="https://healthxllm.netlify.app" target="_blank" rel="noopener">HealthLLM</a>, an open-source hub that helps people find and compare open health models and datasets.</p>
         <p>I'm open to AI Engineer, Backend Engineer and ML Engineer roles. I'm based in Amsterdam and don't need visa sponsorship.</p>
         <div class="facts">
           <div class="fact"><b>4+ years</b><span>building production Python backends</span></div>
@@ -392,10 +396,26 @@
     <div class="wrap">
       <div class="sec-head reveal">
         <span class="sec-no">02 / Featured work</span>
-        <h2>Medical text extraction with local LLMs.</h2>
+        <h2>Open health AI, and medical extraction with local LLMs.</h2>
       </div>
       <div class="sec-body">
         <article class="feature reveal">
+          <span class="tag">Open source · Nov 2026</span>
+          <h3>HealthLLM: a hub for open health LLMs, datasets and evals</h3>
+          <p>It is hard to know which health model or dataset to trust. HealthLLM puts open models, medical datasets and a small set of open evals in one searchable place, with the licence and intended use shown for each entry. After I shared it on LinkedIn it got a lot of attention from people working in healthcare AI, and I'm now improving it from their feedback.</p>
+          <ol class="flow">
+            <li><b>Catalogue</b><span>300+ open health LLMs and 250+ medical datasets.</span></li>
+            <li><b>Sync</b><span>A scheduled job updates the catalogue from Hugging Face every week.</span></li>
+            <li><b>Evaluate</b><span>Open evals you can run locally with Ollama, with the environment recorded.</span></li>
+            <li><b>Contribute</b><span>Open source, so anyone can add or correct an entry.</span></li>
+          </ol>
+          <ul class="points">
+            <li>Licence and use case listed per model and dataset.</li>
+            <li>Scores are for shortlisting, not clinical validation.</li>
+          </ul>
+          <p class="links" style="margin:22px 0 0"><a href="https://healthxllm.netlify.app" target="_blank" rel="noopener">Live site ↗</a> <a href="https://github.com/devankit01/healthllm" target="_blank" rel="noopener">GitHub ↗</a></p>
+        </article>
+        <article class="feature reveal" style="margin-top:24px">
           <span class="tag">Clear.bio · Production</span>
           <h3>Structured data from patient records, with zero data egress</h3>
           <p>Hospitals hold years of useful information in free-text notes, and they can't send it to a cloud API. I designed and deployed a pipeline that extracts it with open models running entirely on-premise.</p>
