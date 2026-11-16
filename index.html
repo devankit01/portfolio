@@ -233,6 +233,12 @@
   .feature .links { display: flex; gap: 18px; font: 500 14px/1 var(--sans); }
   .feature .links a { color: var(--accent); text-decoration: none; }
   .feature .links a:hover { text-decoration: underline; }
+  .hl-title { color: var(--accent); background: var(--accent-soft); padding: 0 .28em; border-radius: 6px; text-decoration: none; }
+  .hl-title:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .gh-card { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; margin: 0 0 22px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink); text-decoration: none; font: 500 14px/1 var(--sans); }
+  .gh-card:hover { border-color: var(--accent); }
+  .gh-name { font-family: var(--mono); font-size: 13px; }
+  .gh-stat { color: var(--muted); } .gh-stat b { color: var(--accent); font-weight: 600; }
   .stats { display: flex; flex-wrap: wrap; gap: 10px 26px; margin: 0 0 18px; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   .stats dt { font: 500 22px/1.1 var(--display); letter-spacing: -.01em; }
   .stats dd { margin: 3px 0 0; color: var(--muted); font-size: 13px; line-height: 1.4; max-width: 15em; }
@@ -401,7 +407,7 @@
       <div class="sec-body">
         <article class="feature reveal">
           <span class="tag">Open source · Nov 2026</span>
-          <h3>HealthLLM: a hub for open health LLMs, datasets and evals</h3>
+          <h3><a class="hl-title" href="https://healthxllm.netlify.app" target="_blank" rel="noopener">HealthLLM</a>: a hub for open health LLMs, datasets and evals</h3>
           <p>It is hard to know which health model or dataset to trust. HealthLLM puts open models, medical datasets and a small set of open evals in one searchable place, with the licence and intended use shown for each entry. After I shared it on LinkedIn it got a lot of attention from people working in healthcare AI, and I'm now improving it from their feedback.</p>
           <ol class="flow">
             <li><b>Catalogue</b><span>300+ open health LLMs and 250+ medical datasets.</span></li>
@@ -413,6 +419,13 @@
             <li>Licence and use case listed per model and dataset.</li>
             <li>Scores are for shortlisting, not clinical validation.</li>
           </ul>
+          <a class="gh-card" href="https://github.com/devankit01/healthllm" target="_blank" rel="noopener" aria-label="HealthLLM on GitHub">
+            <svg viewBox="0 0 16 16" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+            <span class="gh-name">devankit01/healthllm</span>
+            <span class="gh-stat" title="Stars">★ <b id="gh-stars">–</b></span>
+            <span class="gh-stat" title="Forks">⑂ <b id="gh-forks">–</b></span>
+            <span class="gh-stat" title="Open issues">◉ <b id="gh-issues">–</b></span>
+          </a>
           <p class="links" style="margin:22px 0 0"><a href="https://healthxllm.netlify.app" target="_blank" rel="noopener">Live site ↗</a> <a href="https://github.com/devankit01/healthllm" target="_blank" rel="noopener">GitHub ↗</a></p>
         </article>
         <article class="feature reveal" style="margin-top:24px">
@@ -663,6 +676,18 @@
       }
     }
     play();
+  })();
+</script>
+<script>
+  (function () {
+    fetch('https://api.github.com/repos/devankit01/healthllm')
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+      .then(function (d) {
+        document.getElementById('gh-stars').textContent = d.stargazers_count;
+        document.getElementById('gh-forks').textContent = d.forks_count;
+        document.getElementById('gh-issues').textContent = d.open_issues_count;
+      })
+      .catch(function () {});
   })();
 </script>
 </body>
